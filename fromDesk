@@ -1,0 +1,228 @@
+import java.io.*;
+
+import org.apache.poi.EncryptedDocumentException;
+import org.apache.poi.hssf.record.aggregates.RowRecordsAggregate;
+import org.apache.poi.hssf.usermodel.HSSFCreationHelper;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.*;
+
+
+public class WriteOnExcel {
+
+    private static Row row;
+//    private static Row row1;
+//    private static Row row2;
+//    private static Row row3;
+//    private static Row row4;
+//    private static Row row5;
+//    private static Row row6;
+    private static HSSFWorkbook wb;
+    private static FileOutputStream fileOut;
+    private static HSSFCreationHelper createHelper;
+    private static Sheet sheet;
+
+
+    public static void main(String args[]) throws IOException {
+        createFirstRow();
+        writeExcelData("43","ChangesetID 43");
+        writeExcelData("44","ChangesetID 44");
+        writeExcelData("45","ChangesetID 45");
+        writeExcelData("46","ChangesetID 46");
+        writeExcelData("47","ChangesetID 47");
+        writeExcelData("48","ChangesetID 48");
+
+       // readExcelData("4th FEATUREFILE NAME");
+
+    }
+
+public static void createFirstRow() throws IOException
+{
+        wb = new HSSFWorkbook();
+    fileOut = new FileOutputStream(System.getProperty("user.dir")+"/src/main/resources/Test1.xls");
+
+    CreationHelper createHelper = wb.getCreationHelper();
+
+        org.apache.poi.ss.usermodel.Sheet sheet = wb.createSheet("TestSheet");
+
+
+
+// Create the first Row
+    row = sheet.createRow((short) 0);
+// inserting first row cell value
+    row.createCell(0).setCellValue(createHelper.createRichTextString("Serial Number"));
+    row.createCell(1).setCellValue(createHelper.createRichTextString("FeatureFile Row Numbers"));
+    row.createCell(2).setCellValue(createHelper.createRichTextString("Change-Set IDs"));
+
+    wb.write(fileOut);
+    fileOut.close();
+}
+
+public static void writeExcelData(String rowNum, String Value) throws IOException {
+
+    String excelFilePath = System.getProperty("user.dir")+"/src/main/resources/Test1.xls";
+
+    try {
+        FileInputStream inputStream = new FileInputStream(new File(excelFilePath));
+        Workbook workbook = WorkbookFactory.create(inputStream);
+
+        Sheet sheet = workbook.getSheet("TestSheet");
+
+        Object[][] bookData = {
+                {rowNum, Value}
+        };
+
+        int rowCount = sheet.getLastRowNum();
+
+        for (Object[] aBook : bookData) {
+            Row row = sheet.createRow(++rowCount);
+
+            int columnCount = 0;
+
+            Cell cell = row.createCell(columnCount);
+            cell.setCellValue(rowCount);
+
+            for (Object field : aBook) {
+                cell = row.createCell(++columnCount);
+                if (field instanceof String) {
+                    cell.setCellValue((String) field);
+                } else if (field instanceof Integer) {
+                    cell.setCellValue((Integer) field);
+                }
+            }
+
+        }
+
+        inputStream.close();
+
+        FileOutputStream outputStream = new FileOutputStream(excelFilePath);
+        workbook.write(outputStream);
+        workbook.close();
+        outputStream.close();
+
+    } catch (IOException | EncryptedDocumentException
+            | InvalidFormatException ex) {
+        ex.printStackTrace();
+    }
+}
+
+
+
+
+
+
+
+
+
+//public static void writeExcelData() throws IOException {
+//    wb = new HSSFWorkbook();
+//    fileOut = new FileOutputStream(System.getProperty("user.dir")+"/src/main/resources/Test.xls");
+//
+//    CreationHelper createHelper = wb.getCreationHelper();
+//    org.apache.poi.ss.usermodel.Sheet sheet = wb.createSheet("TestSheet");
+//
+//
+//// Create the first Row
+//    row1 = sheet.createRow((short) 0);
+//// inserting first row cell value
+//    row1.createCell(0).setCellValue(createHelper.createRichTextString("FeatureFile Name"));
+//    row1.createCell(1).setCellValue(createHelper.createRichTextString("Change-Set ID"));
+//
+//// creating second row
+//    row2 = sheet.createRow((short) 1);
+//// inserting second row cell value
+//    row2.createCell(0).setCellValue(createHelper.createRichTextString("1st FEATUREFILE NAME"));
+//    row2.createCell(1).setCellValue(createHelper.createRichTextString("1st Changeset ID"));
+//
+//// creating Third row
+//    row3 = sheet.createRow((short) 2);
+//// inserting Third row cell value
+//    row3.createCell(0).setCellValue(createHelper.createRichTextString("2nd FEATUREFILE NAME"));
+//    row3.createCell(1).setCellValue(createHelper.createRichTextString("2nd Changeset ID"));
+//
+//// creating Fourth row
+//    row4 = sheet.createRow((short) 3);
+//// inserting Fourth row cell value
+//    row4.createCell(0).setCellValue(createHelper.createRichTextString("3rd FEATUREFILE NAME"));
+//    row4.createCell(1).setCellValue(createHelper.createRichTextString("3rd Changeset ID"));
+//
+//// creating Fifth row
+//    row5 = sheet.createRow((short) 4);
+//// inserting Fifth row cell value
+//    row5.createCell(0).setCellValue(createHelper.createRichTextString("4th FEATUREFILE NAME"));
+//    row5.createCell(1).setCellValue(createHelper.createRichTextString("4th Changeset ID"));
+//
+//// creating Sixth row
+//    row6 = sheet.createRow((short) 5);
+//// inserting Sixth row cell value
+//    row6.createCell(0).setCellValue(createHelper.createRichTextString("5th FEATUREFILE NAME"));
+//    row6.createCell(1).setCellValue(createHelper.createRichTextString("5th Changeset ID"));
+//
+//// Write the output to a file
+//    wb.write(fileOut);
+//    fileOut.close();
+//}
+
+
+
+
+//public static void readExcelData(String rowNumber){
+//
+//        switch (rowNumber){
+//            case "42":
+//                System.out.println(row2.getCell(1).getRichStringCellValue());
+//                break;
+//            case "43":
+//                break;
+//            case "44":
+//                break;
+//            case "45":
+//                break;
+//            case "59":
+//                break;
+//            case "73":
+//                break;
+//            case "74":
+//                break;
+//            case "75":
+//                break;
+//            case "76":
+//                break;
+//            case "77":
+//                break;
+//            case "78":
+//                break;
+//            case "79":
+//                break;
+//            case "80":
+//                break;
+//            case "81":
+//                break;
+//            case "82":
+//                break;
+//            case "83":
+//                break;
+//
+//            default:
+//                break;
+//        }
+//
+//    if (rowNumber.equalsIgnoreCase("1st FEATUREFILE NAME")) {
+//        System.out.println(row2.getCell(1).getRichStringCellValue());
+//
+//    } else if (rowNumber.equalsIgnoreCase("2nd FEATUREFILE NAME")) {
+//        System.out.println(row3.getCell(1).getRichStringCellValue());
+//
+//    } else if (rowNumber.equalsIgnoreCase("3rd FEATUREFILE NAME")) {
+//        System.out.println(row4.getCell(1).getRichStringCellValue());
+//
+//    } else if (rowNumber.equalsIgnoreCase("4th FEATUREFILE NAME")) {
+//        System.out.println(row5.getCell(1).getRichStringCellValue());
+//
+//    } else if (rowNumber.equalsIgnoreCase("5th FEATUREFILE NAME")) {
+//        System.out.println(row6.getCell(1).getRichStringCellValue());
+//
+//    }
+//    }
+}
